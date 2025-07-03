@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>QuickSite</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: white;
+      font-family: Arial, sans-serif;
+    }
+    .top-bar, .bottom-bar {
+      background-color: black;
+      color: white;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+    .top-bar .title {
+      font-size: 24px;
+      font-weight: bold;
+    }
+    .top-bar .socials {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .top-bar .socials img {
+      height: 20px;
+      width: 20px;
+    }
+    .top-bar .cart-icon {
+      cursor: pointer;
+      position: relative;
+    }
+    .top-bar .cart-count {
+      position: absolute;
+      top: -5px;
+      right: -10px;
+      background: red;
+      color: white;
+      border-radius: 50%;
+      padding: 2px 6px;
+      font-size: 12px;
+    }
+    .info-banner {
+      text-align: center;
+      padding: 10px;
+      font-weight: bold;
+    }
+    .product-container {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      padding: 40px 20px;
+      flex-wrap: wrap;
+    }
+    .product {
+      border: 2px solid gray;
+      padding: 20px;
+      width: 200px;
+      text-align: center;
+      transition: border-color 0.3s ease;
+    }
+    .product:hover {
+      border-color: blue;
+    }
+    .product img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+    }
+    .product button {
+      margin-top: 10px;
+      padding: 8px 12px;
+      width: 100%;
+      cursor: pointer;
+      border: none;
+      border-radius: 4px;
+    }
+    .add-cart {
+      background-color: #007bff;
+      color: white;
+    }
+    .more-info {
+      background-color: #e0e0e0;
+    }
+    .cart-modal {
+      position: fixed;
+      top: 60px;
+      right: 20px;
+      width: 300px;
+      background: white;
+      border: 2px solid black;
+      padding: 20px;
+      display: none;
+      z-index: 1000;
+    }
+    .cart-modal h3 {
+      margin-top: 0;
+    }
+    .bottom-bar form {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .bottom-bar input {
+      padding: 5px;
+    }
+    .bottom-bar .right-text {
+      margin-left: auto;
+      text-align: right;
+    }
+    .bottom-bar .right-text small {
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="title">QuickSite</div>
+    <div class="info-banner">Buy your cheap, top quality and quick websites</div>
+    <div class="socials">
+      <span>Follow us on our socials for discount codes:</span>
+      <a href="YOUTUBE_URL_HERE" target="_blank">
+        <img src="YOUTUBE_ICON_URL_HERE" alt="YouTube" />
+      </a>
+      <a href="tiktok.com/trendtolife" target="_blank">
+        <img src="TIKTOK_ICON_URL_HERE" alt="TikTok" />
+      </a>
+    </div>
+    <div class="cart-icon" onclick="toggleCart()">
+      🛒
+      <span class="cart-count" id="cart-count">0</span>
+    </div>
+  </div>
+
+  <!-- Product Section -->
+  <div class="product-container">
+    <div class="product">
+      <img src="PRODUCT_IMAGE_1_URL" alt="Product 1"/>
+      <button class="add-cart" onclick="addToCart(100)">Add to Cart</button>
+      <button class="more-info">More Info</button>
+    </div>
+    <div class="product">
+      <img src="PRODUCT_IMAGE_2_URL" alt="Product 2"/>
+      <button class="add-cart" onclick="addToCart(150)">Add to Cart</button>
+      <button class="more-info">More Info</button>
+    </div>
+    <div class="product">
+      <img src="PRODUCT_IMAGE_3_URL" alt="Product 3"/>
+      <button class="add-cart" onclick="addToCart(200)">Add to Cart</button>
+      <button class="more-info">More Info</button>
+    </div>
+  </div>
+
+  <!-- Cart Modal -->
+  <div class="cart-modal" id="cart-modal">
+    <h3>Your Cart</h3>
+    <p id="savings">You saved: $0</p>
+    <p id="total">Total Cost: $0</p>
+  </div>
+
+  <!-- Bottom Bar -->
+  <div class="bottom-bar">
+    <form onsubmit="applyCode(event)">
+      <label for="code">Redeem Code:</label>
+      <input type="text" id="code" placeholder="Enter code" />
+      <button type="submit">Submit</button>
+    </form>
+    <div class="right-text">
+      <div>All rights reserved | QuickSite®</div>
+    </div>
+  </div>
+
+  <script>
+    let total = 0;
+    let savings = 0;
+    let codeApplied = false;
+
+    function addToCart(price) {
+      let discount = codeApplied ? 0.25 : 0;
+      let finalPrice = price * (1 - discount);
+      let saved = price - finalPrice;
+      total += finalPrice;
+      savings += saved;
+      document.getElementById("total").innerText = "Total Cost: $" + total.toFixed(2);
+      document.getElementById("savings").innerText = "You saved: $" + savings.toFixed(2);
+      document.getElementById("cart-count").innerText = parseInt(document.getElementById("cart-count").innerText) + 1;
+    }
+
+    function toggleCart() {
+      const cart = document.getElementById("cart-modal");
+      cart.style.display = cart.style.display === "none" || cart.style.display === "" ? "block" : "none";
+    }
+
+    function applyCode(e) {
+      e.preventDefault();
+      const code = document.getElementById("code").value.trim().toLowerCase();
+      if (code === "discount25" && !codeApplied) {
+        codeApplied = true;
+        let newTotal = total * 0.75;
+        let newSavings = total * 0.25;
+        savings += newSavings;
+        total = newTotal;
+        document.getElementById("total").innerText = "Total Cost: $" + total.toFixed(2);
+        document.getElementById("savings").innerText = "You saved: $" + savings.toFixed(2);
+        alert("Code applied! You saved 25%.");
+      } else {
+        alert("Invalid code or already applied.");
+      }
+    }
+  </script>
+</body>
+</html>
